@@ -19,7 +19,7 @@
 #define SIZE_ETHERNET 14
 #define ARP_REPLY_SIZE 46
 #define ARP_REQUEST_SIZE 28
-//°¢°¢ ÀÀ¿ë°èÃş ÇÁ·ÎÅäÄİÀÌ »ç¿ëÇÏ´Â Æ÷Æ® Á¤ÀÇ
+//ê°ê° ì‘ìš©ê³„ì¸µ í”„ë¡œí† ì½œì´ ì‚¬ìš©í•˜ëŠ” í¬íŠ¸ ì •ì˜
 #define HTTP 80	
 #define SMTP 25
 #define POP3 110
@@ -31,7 +31,7 @@
 #define TELNET 23
 #define TCP 6
 #define UDP 17
-//°¢°¢ÀÇ flagÀÇ °ª Á¤ÀÇ
+//ê°ê°ì˜ flagì˜ ê°’ ì •ì˜
 #define SYN 0x02
 #define PUSH 0x08
 #define ACK 0x10
@@ -41,7 +41,7 @@
 #define DHCP_SERVER 67
 #define DHCP_CLIENT 68
 
-//ÇÁ·ÎÅäÄİº° Çì´õ¸¦ ±¸Á¶Ã¼·Î Á¤ÀÇÇØ Ä¸Ã³µÈ ÆĞÅ¶¿¡¼­ ±¸Á¶Ã¼ Æ÷ÀÎÅÍ·Î °¢°¢ÀÇ Çì´õ Á¤º¸¸¦ ¾ò¾î¿È.
+//í”„ë¡œí† ì½œë³„ í—¤ë”ë¥¼ êµ¬ì¡°ì²´ë¡œ ì •ì˜í•´ ìº¡ì²˜ëœ íŒ¨í‚·ì—ì„œ êµ¬ì¡°ì²´ í¬ì¸í„°ë¡œ ê°ê°ì˜ í—¤ë” ì •ë³´ë¥¼ ì–»ì–´ì˜´.
 struct ether_addr
 {
 	unsigned char ether_addr_octet[6];
@@ -178,10 +178,10 @@ struct node {
 
 void print_ether_header(ether_header* data)
 {
-	struct  ether_header* eh;               // ÀÌ´õ³İ Çì´õ ±¸Á¶Ã¼
+	struct  ether_header* eh;               // ì´ë”ë„· í—¤ë” êµ¬ì¡°ì²´
 	unsigned short ether_type;
 	eh = data;
-	ether_type = ntohs(eh->ether_type);       // ¼ıÀÚ´Â ³×Æ®¿öÅ© ¹ÙÀÌÆ® ¼ø¼­¿¡¼­ È£½ºÆ® ¹ÙÀÌÆ® ¼ø¼­·Î ¹Ù²ã¾ßÇÔ
+	ether_type = ntohs(eh->ether_type);       // ìˆ«ìëŠ” ë„¤íŠ¸ì›Œí¬ ë°”ì´íŠ¸ ìˆœì„œì—ì„œ í˜¸ìŠ¤íŠ¸ ë°”ì´íŠ¸ ìˆœì„œë¡œ ë°”ê¿”ì•¼í•¨
 
 	if (ether_type == 0x0800)
 	{
@@ -191,7 +191,7 @@ void print_ether_header(ether_header* data)
 	{
 		printf("\n\n\n<<<ARP>>>\n");
 	}
-	// ÀÌ´õ³İ Çì´õ Ãâ·Â
+	// ì´ë”ë„· í—¤ë” ì¶œë ¥
 	printf("============Ethernet Header==================================================================================================================\n");
 	printf("Dst MAC Addr [%02x:%02x:%02x:%02x:%02x:%02x]\n", // 6 byte for dest
 		eh->ether_dhost.ether_addr_octet[0],
@@ -255,14 +255,14 @@ public:
 			tail = obj;
 		}
 	}
-	void remove_all() {
+	void remove_all() { //ëª¨ë“  ë…¸ë“œ ì‚­ì œ
 		while (head != tail) {
 			struct node* tmp = tail;
 			tail = tail->prev;
 			delete tmp;
 		}
 	}
-	void print_all(int type) {
+	void print_all(int type) { //ëª¨ë“  ë…¸ë“œ ì¶œë ¥
 		struct node* iter = head;
 		while (head != tail) {
 			if (iter->type == type) {
@@ -271,7 +271,7 @@ public:
 			iter = iter->next;
 		}
 	}
-	node* find(int no) {
+	node* find(int no) { //noë¥¼ ì´ìš©í•´ì„œ ì°¾ê³ ì í•˜ëŠ” íŒ¨í‚· ë…¸ë“œ íƒìƒ‰
 		struct node* iter = head;
 		while (head != tail) {
 			if (iter->info.no == no) {
@@ -283,29 +283,83 @@ public:
 	}
 };
 
-void stop_capture(linked_list& link) {
-	int ichar;
+void stop_capture(linked_list& link) { //íŒ¨í‚· ìº¡ì³ ì¤‘ë‹¨ ì‹œ í˜¸ì¶œ í•¨ìˆ˜ìˆ˜
+	char ichar;
 	printf("=============================================================================================================================================\n");
-	printf("if you want to go back to menu, press q, if you want to see detail of packet, press number of packet\n");
+	printf("if you want to go back to menu, press 'q', if you want to see detail of packet, press 's' and enter number of packet\n");
 	printf("=============================================================================================================================================\n");
 	while (1) {
-		scanf("%d", &ichar);
-		if (ichar == 'q' || ichar == 'Q') {
+		scanf("%c", &ichar);
+		if (ichar == 'q' || ichar == 'Q') { // ì°¾ê³ ì í•˜ëŠ” íŒ¨í‚·ì˜ ë„˜ë²„ê°€ qì™€ ë™ì¼í•˜ë©´, ì˜ë„ì¹˜ ì•Šê²Œ ì¢…ë£Œë¼ì„œ charí˜•ìœ¼ë¡œ ë³€ê²½
 			link.remove_all();
 			return;
 		}
-		else {
-			link.find(ichar);
+		else if(ichar == 's' || ichar =='S') {
+			int number; //icharë¡œ numberë¥¼ ì…ë ¥ë°›ëŠ” ê²ƒì€ ë¶ˆê°€ëŠ¥í•˜ê¸° ë•Œë¬¸ì— intí˜•ìœ¼ë¡œ ë”°ë¡œ ë°›ì•„ì•¼ í•¨
+			printf("number of packet : ");
+			scanf("%d", &number);
+			link.find(number);
 		}
 	}
 }
 
-int main() {
-	linked_list link = linked_list();
-	pcap_if_t* alldevs = NULL;
-	char errbuf[PCAP_ERRBUF_SIZE];
+void print_menu(const char* packet_filter,int *inum1, int *inum2){ //ë©”ë‰´ ì¶œë ¥ í•¨ìˆ˜
+	//ì „ì†¡ ê³„ì¸µ ì˜µì…˜ ì„ íƒ
+	printf("=============================================================================================================================================\n");
+	printf("choose the packet you want to catch.\n");
+	printf("=============================================================================================================================================\n");
+	printf("1:TCP(HTTP, FTP, TELNET, SSH, SMTP, POP3, IMAP, P2P)\n");
+	printf("2:UDP(DNS, DHCP)\n");
+	printf("3:ARP\n");
+	printf("4:ALL\n");
+	printf("=============================================================================================================================================\n");
+	printf("Enter the number (1-4) : ");
+	scanf_s("%d", inum1);
+	//ë“¤ì–´ì˜¨ ì…ë ¥ê°’ì— ë”°ë¼ packet_filterê°’ì„ ì •ì˜ && ì‘ìš© ê³„ì¸µ ì •ë³´ inum2ì— ì €ì¥
+	if (*inum1 == 1) {
+		packet_filter = "tcp";
+		printf("=============================================================================================================================================\n");
+		printf("choose the one packet you want to catch.\n");
+		printf("=============================================================================================================================================\n");
+		printf("1:HTTP\n");
+		printf("2:FTP\n");
+		printf("3:TELNET\n");
+		printf("4:SSH\n");
+		printf("5:SMTP\n");
+		printf("6:POP3\n");
+		printf("7:IMAP\n");
+		printf("8:P2P\n");
+		printf("9:ALL(TCP)\n");
+		printf("=============================================================================================================================================\n");
+		printf("Enter the number : ");
+		scanf_s("%d", &inum2);
+	}
+	else if (*inum1 == 2) {
+		packet_filter = "udp";
+		printf("=============================================================================================================================================\n");
+		printf("choose the one packet you want to catch.\n");
+		printf("=============================================================================================================================================\n");
+		printf("1:DNS\n");
+		printf("2:DHCP\n");
+		printf("3:ALL(UDP)\n");
+		printf("=============================================================================================================================================\n");
+		printf("Enter the number : ");
+		scanf_s("%d", inum2);
+	}
+	else if (*inum1 == 3) {
+		packet_filter = "arp";
+		*inum2 = 0;
+	}
+	else if (*inum1 == 4) //ëª¨ë“  í”„ë¡œí† ì½œ ìº¡ì³
+		*inum2 = 0;
+}
 
-	// find all network adapters
+int main() {
+	linked_list link = linked_list(); //ë§í¬ ìƒì„±
+	pcap_if_t* alldevs = NULL; // ë„¤íŠ¸ì›Œí¬ ì–´ëŒ‘í„°ì˜ ë””ë°”ì´ìŠ¤ ì •ë³´ ì €ì¥í•  í¬ì¸í„°
+	char errbuf[PCAP_ERRBUF_SIZE]; //ì—ëŸ¬ê°’ ì €ì¥
+
+	// ë„¤íŠ¸ì›Œí¬ ì–´ëŒ‘í„° ì°¾ê¸°
 	if (pcap_findalldevs(&alldevs, errbuf) == -1) {
 		printf("dev find failed\n");
 		return -1;
@@ -314,7 +368,8 @@ int main() {
 		printf("no devs found\n");
 		return -1;
 	}
-	// print them
+	// ë„¤íŠ¸ì›Œí¬ ì–´ëŒ‘í„° ë¦¬ìŠ¤íŠ¸ ì¶œë ¥
+	printf("Select a network adapter to capture packets.\n");
 	pcap_if_t* d; int i;
 	for (d = alldevs, i = 0; d != NULL; d = d->next) {
 		printf("%d-th dev: %s ", ++i, d->name);
@@ -331,53 +386,8 @@ int main() {
 	scanf("%d", &inum);
 	for (d = alldevs, i = 0; i < inum - 1; d = d->next, i++); // jump to the i-th dev
 	while (1) {
-		printf("=============================================================================================================================================\n");
-		printf("choose the packet you want to catch.\n");
-		printf("=============================================================================================================================================\n");
-		printf("1:TCP(HTTP, FTP, TELNET, SSH, SMTP, POP3, IMAP, P2P)\n");
-		printf("2:UDP(DNS, DHCP)\n");
-		printf("3:ARP\n");
-		printf("4:ALL\n");
-		printf("=============================================================================================================================================\n");
-		printf("Enter the number (1-4) : ");
-		scanf_s("%d", &inum1);
-		//µé¾î¿Â ÀÔ·Â°ª¿¡ µû¶ó packet_filter°ªÀ» Á¤ÀÇ
-		if (inum1 == 1) {
-			packet_filter = "tcp";
-			printf("=============================================================================================================================================\n");
-			printf("choose the one packet you want to catch.\n");
-			printf("=============================================================================================================================================\n");
-			printf("1:HTTP\n");
-			printf("2:FTP\n");
-			printf("3:TELNET\n");
-			printf("4:SSH\n");
-			printf("5:SMTP\n");
-			printf("6:POP3\n");
-			printf("7:IMAP\n");
-			printf("8:P2P\n");
-			printf("9:ALL(TCP)\n");
-			printf("=============================================================================================================================================\n");
-			printf("Enter the number : ");
-			scanf_s("%d", &inum2);
-		}
-		else if (inum1 == 2) {
-			packet_filter = "udp";
-			printf("=============================================================================================================================================\n");
-			printf("choose the one packet you want to catch.\n");
-			printf("=============================================================================================================================================\n");
-			printf("1:DNS\n");
-			printf("2:DHCP\n");
-			printf("3:ALL(UDP)\n");
-			printf("=============================================================================================================================================\n");
-			printf("Enter the number : ");
-			scanf_s("%d", &inum2);
-		}
-		else if (inum1 == 3) {
-			packet_filter = "arp";
-			inum2 = 0;
-		}
-		else if (inum1 == 4)
-			inum2 = 0;
+		
+		print_menu(packet_filter, &inum1, &inum2);
 		// open
 		pcap_t* fp;
 		if ((fp = pcap_open_live(d->name,      // name of the device
@@ -408,8 +418,6 @@ int main() {
 			pcap_freealldevs(alldevs);
 			return -1;
 		}
-
-		pcap_freealldevs(alldevs); // we don't need this anymore
 
 		struct pcap_pkthdr* header;
 
@@ -442,11 +450,11 @@ int main() {
 				pkt_data = pkt_data + SIZE_ETHERNET;
 				new_node->info.p_ip = new ip_header;
 				*(new_node->info.p_ip) = *(struct ip_header*)pkt_data;
-				int ipLen = (new_node->info.p_ip->ip_header_len * 4); //¿öµå(4¹ÙÀÌÆ®) Å©±â·Î header_lenÀ» Ç¥ÇöÇÏ¹Ç·Î ¹ÙÀÌÆ® ´ÜÀ§·Î º¯È¯ÇÏ±â À§ÇØ *4
+				int ipLen = (new_node->info.p_ip->ip_header_len * 4); //ì›Œë“œ(4ë°”ì´íŠ¸) í¬ê¸°ë¡œ header_lenì„ í‘œí˜„í•˜ë¯€ë¡œ ë°”ì´íŠ¸ ë‹¨ìœ„ë¡œ ë³€í™˜í•˜ê¸° ìœ„í•´ *4
 				pkt_data = pkt_data + ipLen;
 				int tcplen;
 				int udplen;
-				switch (new_node->info.p_ip->ip_protocol)  //ÇÁ·ÎÅäÄİ¿¡ µû¶ó ºĞ±â
+				switch (new_node->info.p_ip->ip_protocol)  //í”„ë¡œí† ì½œì— ë”°ë¼ ë¶„ê¸°
 				{
 				case TCP:
 					new_node->info.p_tcp = new tcp_header;
@@ -527,5 +535,6 @@ int main() {
 		}
 		stop_capture(link);
 	}
+	pcap_freealldevs(alldevs); // stop_capture ì´í›„ whileë¬¸ì„ ë‹¤ì‹œ ì‹œì‘í•˜ë©´, ë””ë°”ì´ìŠ¤ ì •ë³´ê°€ í•„ìš”í•˜ê¸°ì— ëª¨ë“  í”„ë¡œê·¸ë¨ ì¢…ë£Œ í›„ devëª©ë¡ freeí•˜ê¸°
 	return 0;
 }
